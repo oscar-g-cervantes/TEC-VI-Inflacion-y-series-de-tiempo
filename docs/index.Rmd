@@ -1,0 +1,28 @@
+---
+title: 'Series de tiempo: Inflación'
+author: "Oscar García Cervantes - Taller de economía cuantitativa VI"
+date: "`r format(Sys.time(), '%A %d de %B, %Y')`"
+output:
+     html_document:
+           toc: true
+           toc_float:
+                   collapsed: false
+                   smooth_scroll: false
+           toc_depth: 3       
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.align = 'center', echo = TRUE)
+```
+
+# Paqueterias
+
+```{r, warning = FALSE, message = FALSE}
+library(forecast)
+```
+
