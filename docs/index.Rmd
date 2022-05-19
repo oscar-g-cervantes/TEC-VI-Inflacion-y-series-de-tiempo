@@ -14,15 +14,246 @@ editor_options:
     wrap: 72
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(fig.align = 'center', echo = TRUE)
 ```
 
-# Paqueterias
+# 1. Paqueterias
 
 ```{r, warning = FALSE, message = FALSE}
 library(forecast)
+library(tidyverse)
+library(tseries)
+library(mFilter)
+library(ggfortify)
 ```
+
+# 2. Bases de datos
+
+Para esta sesión utilizaremos las bases de datos de inflación y el
+Índice nacional de precios al consumidor (INPC) publicadas por el
+Instituto Nacional de Estadística y Geografía (INEGI). Tenemos dos bases
+de datos: La base `Inflacion_1970` es la de mayor amplitud y contiene
+datos mensuales de la inflación desde enero de 1970, la inflación
+interanual y la inflación acumulada anual.También, la base
+`Indice_mensual`, que contiene el INPC (base segunda quincena de
+2018=100) de manera general y el índice subyacente y no subyacente de
+manera desagregada, las series para el periodo de 1982-01 a 2022-04.
+
+```{r}
+Inflacion_1970 <- read.csv("Inflación_1970.csv", header = TRUE)
+Indice_mensual <- read.csv("Indice_mensual.csv", header = T)
+```
+
+# 3. Visualización de datos
+
+Primero le damos estructura de series de tiempo a las series que analizaremos:
+
+```{r}
+Inflacion_mensual <- ts(Inflacion_1970$Inflación.mensual, start = c(1970, 1), frequency = 12)
+Inflacion_mensual_inter <- ts(Inflacion_1970$Inflación.mensual.interanual, start = c(1970, 1), frequency = 12)
+Indice_mensual_ts <- ts(Indice_mensual$Indice.general, start = c(1982, 1), frequency = 12)
+
+print(Inflacion_mensual)
+```
+
+A diferencia de las sesiones previas, para graficar series de tiempo con
+`ggplot2` utilizamos el comando `autoplot()`. Añadimos `ggplot2::`
+previo a `autoplot` porque el mismo comando también se encuentra en la
+paquetería forecast y así nos aseguramos que utilice la paquetería `ggplot2`.
+
+Ahora visualisamos las series:
+
+```{r}
+ggplot2::autoplot(Inflacion_mensual_inter, ts.colour = "darkblue") +
+     labs(title = "Inflación interanual 1970-2022",
+          subtitle = "Periodicidad mensual",
+          x = "Fecha",
+          y = "Inflación interanual (%)",
+          caption = "Fuente: Elaboración propia con datos del BIE INEGI") +
+     theme_gray(base_family = "serif") + 
+     scale_x_date(date_breaks = "5 year", date_labels = "%Y")
+
+
+ggplot2::autoplot(Inflacion_mensual, ts.colour = "cyan4") +
+     labs(title = "Inflación mensual 1970-2022",
+          x = "Fecha",
+          y = "Inflación mensual (%)",
+          caption = "Fuente: Elaboración propia con datos del BIE INEGI") +
+     theme_gray(base_family = "serif") + 
+     scale_x_date(date_breaks = "5 year", date_labels = "%Y")
+
+
+ggplot2::autoplot(Indice_mensual_ts, ts.colour = "darkred") +
+     labs(title = "Índice nacional de precios al consumidor 1982-2022",
+          subtitle = "(base 2018=100)",
+          x = "Fecha",
+          y = "INPC (%)",
+          caption = "Fuente: Elaboración propia con datos del BIE INEGI") +
+     theme_gray(base_family = "serif") + 
+     scale_x_date(date_breaks = "5 year", date_labels = "%Y")
+
+```
+
+# 4. Componentes de las series de tiempo
+
+Para elegir el método adecuado de pronóstico es útil separar las series
+de tiempo en una parte sistemática y una no sistemática. La parte
+sistemática se divide normalmente en tres componentes: nivel, tendencia
+y estacionalidad. La parte no sistemática se conoce normalmente como
+*ruido*.
+
+El nivel describe los valores promedio de las series; la tendencia es el
+cambio de la serie de un periodo a otro; y la estacionalidad describe un
+comportamiento cíclico de corto plazo que puede observar varias veces en
+la serie. Algunas series no tienen tendencia o estacionalidad, pero
+todas tienen nivel.
+
+Los componentes son comúnmente considerados como aditivos o
+multiplicativos.
+
+**Aditivos:** $$
+y_t=Nivel+Tendencia+Estacionalidad+Ruido
+$$
+
+**Multiplicativos:** $$
+y_t=Nivel*Tendencia*Estacionalidad*Ruido
+$$
+
+# 5. Modelos de regresión
+
+Los modelos los realizaremos para la serie `Indice_mensual_ts`.
+
+## 5.1 Modelo de tendencia lineal
+
+El modelo de tendencia lineal se representa de la siguiente manera:
+
+$$
+y_t = \beta_0+\beta_1t+\epsilon
+$$ en este caso $y_t$ es el INPC, $\beta_0$ es el nivel, $\beta_1$ es la
+tendencia y $\epsilon$ es el ruido. La estacionalidad no se modela.
+
+```{r}
+m_tl <- tslm(Indice_mensual_ts ~ trend)
+summary(m_tl)
+
+mtl <- cbind(Indice_mensual_ts, m_tl$fitted.values)
+
+ggplot2::autoplot(mtl) +
+     labs(title = "INPC y tendencia lineal 1982-2022",
+          subtitle = "(base 2018=100)",
+          x = "Fecha",
+          y = "INPC (%)",
+          caption = "Fuente: Elaboración propia con datos del BIE INEGI") +
+     theme_gray(base_family = "serif")
+
+
+```
+
+Como $\beta_1>0$ sabemos que existe tendencia lineal creciente.
+
+## 5.2 Modelo de tendencia cuadrática
+
+El modelo de tendencia cuadrática se representa de la siguiente manera:
+
+$$
+y_t=\beta_0+\beta_1t+\beta_2t^2+\epsilon
+$$ Ahora realizamos la regresión:
+
+```{r}
+m_tc <- tslm(Indice_mensual_ts ~ trend + I(trend^2))
+summary(m_tc)
+```
+
+De la regresión obtenemos que no existe tendencia cuadrática a ser
+$\beta_1 > 0$ & $\beta_2 > 0$, esto lo confirmamos de manera visual.
+
+```{r}
+mtc <- cbind(Indice_mensual_ts, m_tc$fitted.values)
+
+ggplot2::autoplot(mtc) +
+     labs(title = "INPC y tendencia cuadrática 1982-2022",
+          subtitle = "(base 2018=100)",
+          x = "Fecha",
+          y = "INPC (%)",
+          caption = "Fuente: Elaboración propia con datos del BIE INEGI") +
+     theme_gray(base_family = "serif")
+
+```
+
+# 6. Modelos de suavizamiento
+
+# 6.1 Medias móviles
+
+```{r}
+# Tendencia
+trend_inpc <- ma(Indice_mensual_ts, order = 12, centre = T)
+inpc_trend <- cbind(Indice_mensual_ts, trend_inpc)
+ggplot2::autoplot(inpc_trend, facets = T)
+
+# El siguiente comando descompone de manera gráfica la serie y sus componentes
+ggplot2::autoplot(stl(Indice_mensual_ts, "periodic"), ts.colour = "cyan4") +
+     labs(title = "INPC y sus componentes de serie de tiempo 1982-2022",
+          subtitle = "(base 2018=100)",
+          x = "Fecha",
+          y = "%",
+          caption = "Fuente: Elaboración propia con datos del BIE INEGI") +
+     theme_gray(base_family = "serif")
+```
+
+A hora podemos eliminar la tendencia de la serie y observar cómo se
+comporta.
+
+```{r}
+ntrend_inpc <- Indice_mensual_ts - trend_inpc
+autoplot(ntrend_inpc, colour = "cyan4")
+```
+
+# 7. Filtro Hodrick - Prescott
+
+Para utilizar el filtro *Hodrick-Prescott* empleamos la paquetería
+`mFilter`. Establecemos el valor lambda $\lambda = 120000$ que se encuentra en el rango propuesto por [Maravall y del Rio (2001)](https://www.bde.es/f/webbde/SES/Secciones/Publicaciones/PublicacionesSeriadas/DocumentosTrabajo/01/Fic/dt0108e.pdf) para datos de frecuencia mensual.
+
+Obtenemos el componente cíclico de la serie con el filtro Hodrick-Prescott de la siguiente manera:
+
+```{r}
+lambda_hp1 <- 120000
+INPC_HP <- hpfilter(Indice_mensual_ts, type = "lambda", freq = lambda_hp1)
+plot(INPC_HP)
+
+```
+
+# 8. Prueba de raices unitarias - Augmented Dickey-Fuller (ADF) test
+
+La hipótesis nula del test ADF es la no estacionariedad, si rechazamos $H_o$ entonces nuestra sere es estacionaria. Realizaremos el test para las series `Indice_mensual_ts`, `Inflación_mensual` e `Inflacion_mensual_inter`
+
+```{r}
+adf.test(Indice_mensual_ts)
+adf.test(Inflacion_mensual)
+adf.test(Inflacion_mensual_inter)
+```
+
+Los resultados del test nos indícan que el INPC mensual no es estacionario en niveles, mientras que la inflación mensual y la inflación interanual si lo son al presentar, para estas últimas, un $p-value < 0.5$. 
+
+Obtenemos las primeras diferencias de la serie del INPC y realizamos nuevamente el test ADF.
+
+```{r}
+d1_INPC_mensual <- diff(Indice_mensual_ts, lag = 12, differences = 1)
+adf.test(d1_INPC_mensual, k = 1)
+ggplot2::autoplot(d1_INPC_mensual, ts.colour = "gray") +
+  labs(title = "Primeras diferencias del INPC 1983-2022",
+       subtitle = "(2018=100",
+       x = "Fecha") +
+  theme_dark(base_family = "serif")
+```
+
+Nuevamente la serie no es estacionaria, obtenemos las segundas diferencias.
+
+```{r}
+d2_INPC_mensual <- diff(Indice_mensual_ts, lag = 12, differences = 2)
+adf.test(d2_INPC_mensual)
+```
+
+La serie del INPC de 1983 a 2022 es estacionaria en sus segundas diferencias, es decir, es I(2), mientras que la inflación mensual y la inflación interanual son I(0).
 
