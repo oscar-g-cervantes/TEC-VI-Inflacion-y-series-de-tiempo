@@ -264,7 +264,8 @@ library(tidyverse)
 library(tseries)
 library(mFilter)
 library(ggfortify)
-library(fUnitRoots)</code></pre>
+library(fUnitRoots)
+library(aTSA)</code></pre>
 </div>
 <div id="bases-de-datos" class="section level1">
 <h1>2. Bases de datos</h1>
@@ -527,12 +528,35 @@ plot(INPC_HP)</code></pre>
 <h2>8.1 Augmented Dickey-Fuller (ADF) test</h2>
 <p>La hipótesis nula del test ADF es la no estacionariedad, si rechazamos <span class="math inline">\(H_o\)</span> entonces nuestra sere es estacionaria. Realizaremos el test para las series <code>Indice_mensual_ts</code>, <code>Inflación_mensual</code> e <code>Inflacion_mensual_inter</code></p>
 <pre class="r"><code>adf.test(Indice_mensual_ts)</code></pre>
-<pre><code>## 
-##  Augmented Dickey-Fuller Test
-## 
-## data:  Indice_mensual_ts
-## Dickey-Fuller = -1.7635, Lag order = 7, p-value = 0.6782
-## alternative hypothesis: stationary</code></pre>
+<pre><code>## Augmented Dickey-Fuller Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##      lag   ADF p.value
+## [1,]   0 20.02    0.99
+## [2,]   1  7.00    0.99
+## [3,]   2  6.70    0.99
+## [4,]   3  6.16    0.99
+## [5,]   4  5.86    0.99
+## [6,]   5  6.15    0.99
+## Type 2: with drift no trend 
+##      lag  ADF p.value
+## [1,]   0 7.01    0.99
+## [2,]   1 3.27    0.99
+## [3,]   2 3.31    0.99
+## [4,]   3 3.21    0.99
+## [5,]   4 3.20    0.99
+## [6,]   5 3.53    0.99
+## Type 3: with drift and trend 
+##      lag   ADF p.value
+## [1,]   0 -2.20   0.493
+## [2,]   1 -1.93   0.605
+## [3,]   2 -1.92   0.610
+## [4,]   3 -1.91   0.615
+## [5,]   4 -1.90   0.620
+## [6,]   5 -1.91   0.616
+## ---- 
+## Note: in fact, p.value = 0.01 means p.value &lt;= 0.01</code></pre>
 <pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;nc&quot;) # Con constante</code></pre>
 <pre><code>## Warning in adfTest(Indice_mensual_ts, lags = 1, type = &quot;nc&quot;): p-value greater
 ## than printed p-value</code></pre>
@@ -549,7 +573,7 @@ plot(INPC_HP)</code></pre>
 ##     0.99 
 ## 
 ## Description:
-##  Fri May 20 13:33:01 2022 by user: oscar</code></pre>
+##  Fri May 20 14:16:05 2022 by user: oscar</code></pre>
 <pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;c&quot;)  # Sin constante ni tendencia</code></pre>
 <pre><code>## Warning in adfTest(Indice_mensual_ts, lags = 1, type = &quot;c&quot;): p-value greater
 ## than printed p-value</code></pre>
@@ -566,7 +590,7 @@ plot(INPC_HP)</code></pre>
 ##     0.99 
 ## 
 ## Description:
-##  Fri May 20 13:33:01 2022 by user: oscar</code></pre>
+##  Fri May 20 14:16:05 2022 by user: oscar</code></pre>
 <pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;ct&quot;) # Con constante y tendencia</code></pre>
 <pre><code>## 
 ## Title:
@@ -581,31 +605,106 @@ plot(INPC_HP)</code></pre>
 ##     0.6068 
 ## 
 ## Description:
-##  Fri May 20 13:33:01 2022 by user: oscar</code></pre>
+##  Fri May 20 14:16:05 2022 by user: oscar</code></pre>
 <pre class="r"><code>adf.test(Inflacion_mensual)</code></pre>
-<pre><code>## 
-##  Augmented Dickey-Fuller Test
-## 
-## data:  Inflacion_mensual
-## Dickey-Fuller = -3.6305, Lag order = 8, p-value = 0.02975
-## alternative hypothesis: stationary</code></pre>
+<pre><code>## Augmented Dickey-Fuller Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##      lag   ADF p.value
+## [1,]   0 -4.86  0.0100
+## [2,]   1 -4.43  0.0100
+## [3,]   2 -3.59  0.0100
+## [4,]   3 -3.18  0.0100
+## [5,]   4 -2.97  0.0100
+## [6,]   5 -2.89  0.0100
+## [7,]   6 -2.50  0.0134
+## Type 2: with drift no trend 
+##      lag   ADF p.value
+## [1,]   0 -6.12  0.0100
+## [2,]   1 -5.66  0.0100
+## [3,]   2 -4.61  0.0100
+## [4,]   3 -4.12  0.0100
+## [5,]   4 -3.87  0.0100
+## [6,]   5 -3.77  0.0100
+## [7,]   6 -3.28  0.0178
+## Type 3: with drift and trend 
+##      lag   ADF p.value
+## [1,]   0 -6.71  0.0100
+## [2,]   1 -6.27  0.0100
+## [3,]   2 -5.15  0.0100
+## [4,]   3 -4.65  0.0100
+## [5,]   4 -4.40  0.0100
+## [6,]   5 -4.29  0.0100
+## [7,]   6 -3.79  0.0192
+## ---- 
+## Note: in fact, p.value = 0.01 means p.value &lt;= 0.01</code></pre>
 <pre class="r"><code>adf.test(Inflacion_mensual_inter)</code></pre>
-<pre><code>## 
-##  Augmented Dickey-Fuller Test
-## 
-## data:  Inflacion_mensual_inter
-## Dickey-Fuller = -3.9096, Lag order = 8, p-value = 0.01352
-## alternative hypothesis: stationary</code></pre>
+<pre><code>## Augmented Dickey-Fuller Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##      lag    ADF p.value
+## [1,]   0 -0.933   0.345
+## [2,]   1 -2.609   0.010
+## [3,]   2 -2.693   0.010
+## [4,]   3 -2.860   0.010
+## [5,]   4 -2.906   0.010
+## [6,]   5 -2.887   0.010
+## [7,]   6 -2.728   0.010
+## Type 2: with drift no trend 
+##      lag   ADF p.value
+## [1,]   0 -1.17  0.6404
+## [2,]   1 -3.24  0.0197
+## [3,]   2 -3.35  0.0145
+## [4,]   3 -3.57  0.0100
+## [5,]   4 -3.64  0.0100
+## [6,]   5 -3.63  0.0100
+## [7,]   6 -3.44  0.0100
+## Type 3: with drift and trend 
+##      lag   ADF p.value
+## [1,]   0 -1.57  0.7588
+## [2,]   1 -3.61  0.0306
+## [3,]   2 -3.73  0.0221
+## [4,]   3 -3.98  0.0100
+## [5,]   4 -4.06  0.0100
+## [6,]   5 -4.06  0.0100
+## [7,]   6 -3.87  0.0149
+## ---- 
+## Note: in fact, p.value = 0.01 means p.value &lt;= 0.01</code></pre>
 <p>Los resultados del test nos indícan que el INPC mensual no es estacionario en niveles, mientras que la inflación mensual y la inflación interanual si lo son al presentar, para estas últimas, un <span class="math inline">\(p-value &lt; 0.5\)</span>.</p>
 <p>Obtenemos las primeras diferencias de la serie del INPC y realizamos nuevamente el test ADF.</p>
 <pre class="r"><code>d1_INPC_mensual &lt;- diff(Indice_mensual_ts, lag = 12, differences = 1)
-adf.test(d1_INPC_mensual, k = 1)</code></pre>
-<pre><code>## 
-##  Augmented Dickey-Fuller Test
-## 
-## data:  d1_INPC_mensual
-## Dickey-Fuller = -2.298, Lag order = 1, p-value = 0.452
-## alternative hypothesis: stationary</code></pre>
+adf.test(d1_INPC_mensual)</code></pre>
+<pre><code>## Augmented Dickey-Fuller Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##      lag     ADF p.value
+## [1,]   0  1.1342   0.931
+## [2,]   1 -0.0523   0.629
+## [3,]   2  0.0565   0.660
+## [4,]   3 -0.0184   0.639
+## [5,]   4  0.0281   0.652
+## [6,]   5 -0.0905   0.618
+## Type 2: with drift no trend 
+##      lag    ADF p.value
+## [1,]   0 -0.343   0.913
+## [2,]   1 -1.712   0.443
+## [3,]   2 -1.584   0.494
+## [4,]   3 -1.695   0.450
+## [5,]   4 -1.650   0.467
+## [6,]   5 -1.828   0.396
+## Type 3: with drift and trend 
+##      lag    ADF p.value
+## [1,]   0 -0.894   0.953
+## [2,]   1 -2.298   0.450
+## [3,]   2 -2.159   0.509
+## [4,]   3 -2.278   0.459
+## [5,]   4 -2.229   0.479
+## [6,]   5 -2.419   0.399
+## ---- 
+## Note: in fact, p.value = 0.01 means p.value &lt;= 0.01</code></pre>
 <pre class="r"><code>ggplot2::autoplot(d1_INPC_mensual, ts.colour = &quot;gray&quot;) +
   labs(title = &quot;Primeras diferencias del INPC 1983-2022&quot;,
        subtitle = &quot;(2018=100&quot;,
@@ -615,90 +714,160 @@ adf.test(d1_INPC_mensual, k = 1)</code></pre>
 <p>Nuevamente la serie no es estacionaria, obtenemos las segundas diferencias.</p>
 <pre class="r"><code>d2_INPC_mensual &lt;- diff(Indice_mensual_ts, lag = 12, differences = 2)
 adf.test(d2_INPC_mensual)</code></pre>
-<pre><code>## Warning in adf.test(d2_INPC_mensual): p-value smaller than printed p-value</code></pre>
-<pre><code>## 
-##  Augmented Dickey-Fuller Test
-## 
-## data:  d2_INPC_mensual
-## Dickey-Fuller = -6.6984, Lag order = 7, p-value = 0.01
-## alternative hypothesis: stationary</code></pre>
+<pre><code>## Augmented Dickey-Fuller Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##      lag   ADF p.value
+## [1,]   0 -2.95    0.01
+## [2,]   1 -5.04    0.01
+## [3,]   2 -4.72    0.01
+## [4,]   3 -4.90    0.01
+## [5,]   4 -4.73    0.01
+## [6,]   5 -4.80    0.01
+## Type 2: with drift no trend 
+##      lag   ADF p.value
+## [1,]   0 -3.00  0.0374
+## [2,]   1 -5.09  0.0100
+## [3,]   2 -4.77  0.0100
+## [4,]   3 -4.95  0.0100
+## [5,]   4 -4.78  0.0100
+## [6,]   5 -4.86  0.0100
+## Type 3: with drift and trend 
+##      lag   ADF p.value
+## [1,]   0 -3.02   0.147
+## [2,]   1 -5.09   0.010
+## [3,]   2 -4.77   0.010
+## [4,]   3 -4.95   0.010
+## [5,]   4 -4.78   0.010
+## [6,]   5 -4.85   0.010
+## ---- 
+## Note: in fact, p.value = 0.01 means p.value &lt;= 0.01</code></pre>
 <p>La serie del INPC de 1983 a 2022 es estacionaria en sus segundas diferencias, es decir, es I(2), mientras que la inflación mensual y la inflación interanual son I(0).</p>
 </div>
 <div id="phillips-perron-test" class="section level2">
 <h2>8.2 Phillips-Perron test</h2>
-<pre class="r"><code>urppTest(Indice_mensual_ts, type = c(&quot;Z-alpha&quot;, &quot;Z-tau&quot;), model = c(&quot;constant&quot;), doplot = F)</code></pre>
-<pre><code>## 
-## Title:
-##  Phillips-Perron Unit Root Test
-## 
-## Test Results:
-## 
-## 
-## Description:
-##  Fri May 20 13:33:01 2022 by user: oscar</code></pre>
-<pre class="r"><code>urppTest(Indice_mensual_ts, type = c(&quot;Z-alpha&quot;, &quot;Z-tau&quot;), model = c(&quot;constant&quot;, &quot;trend&quot;), doplot = F)</code></pre>
-<pre><code>## 
-## Title:
-##  Phillips-Perron Unit Root Test
-## 
-## Test Results:
-## 
-## 
-## Description:
-##  Fri May 20 13:33:01 2022 by user: oscar</code></pre>
 <pre class="r"><code>pp.test(Indice_mensual_ts)</code></pre>
-<pre><code>## 
-##  Phillips-Perron Unit Root Test
-## 
-## data:  Indice_mensual_ts
-## Dickey-Fuller Z(alpha) = -4.1516, Truncation lag parameter = 5, p-value
-## = 0.8781
-## alternative hypothesis: stationary</code></pre>
+<pre><code>## Phillips-Perron Unit Root Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##  lag Z_rho p.value
+##    5     2   0.989
+## ----- 
+##  Type 2: with drift no trend 
+##  lag Z_rho p.value
+##    5   1.1    0.99
+## ----- 
+##  Type 3: with drift and trend 
+##  lag Z_rho p.value
+##    5 -4.15   0.871
+## --------------- 
+## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
 <pre class="r"><code>pp.test(Inflacion_mensual)</code></pre>
-<pre><code>## Warning in pp.test(Inflacion_mensual): p-value smaller than printed p-value</code></pre>
-<pre><code>## 
-##  Phillips-Perron Unit Root Test
-## 
-## data:  Inflacion_mensual
-## Dickey-Fuller Z(alpha) = -67.413, Truncation lag parameter = 6, p-value
-## = 0.01
-## alternative hypothesis: stationary</code></pre>
+<pre><code>## Phillips-Perron Unit Root Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##  lag Z_rho p.value
+##    6 -30.3    0.01
+## ----- 
+##  Type 2: with drift no trend 
+##  lag Z_rho p.value
+##    6 -54.3    0.01
+## ----- 
+##  Type 3: with drift and trend 
+##  lag Z_rho p.value
+##    6 -67.4    0.01
+## --------------- 
+## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
 <pre class="r"><code>pp.test(Inflacion_mensual_inter)</code></pre>
-<pre><code>## 
-##  Phillips-Perron Unit Root Test
-## 
-## data:  Inflacion_mensual_inter
-## Dickey-Fuller Z(alpha) = -14.293, Truncation lag parameter = 6, p-value
-## = 0.3124
-## alternative hypothesis: stationary</code></pre>
+<pre><code>## Phillips-Perron Unit Root Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##  lag Z_rho p.value
+##    6 -7.67  0.0577
+## ----- 
+##  Type 2: with drift no trend 
+##  lag Z_rho p.value
+##    6 -11.7  0.0919
+## ----- 
+##  Type 3: with drift and trend 
+##  lag Z_rho p.value
+##    6 -14.3    0.27
+## --------------- 
+## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
+<pre class="r"><code>aTSA::pp.test(Indice_mensual_ts, type=c(&quot;Z_tau&quot;))</code></pre>
+<pre><code>## Phillips-Perron Unit Root Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##  lag Z_tau p.value
+##    5  11.5    0.99
+## ----- 
+##  Type 2: with drift no trend 
+##  lag Z_tau p.value
+##    5  4.21    0.99
+## ----- 
+##  Type 3: with drift and trend 
+##  lag Z_tau p.value
+##    5    -2   0.577
+## --------------- 
+## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
 <p>Con el test de Phillips-Perron sólo la serie de <code>Inflacion_mensual</code> no presenta raíz unitaria, es I(0). Realizamos la prueba para las diferencias de la <code>Inflacion_mensual_inter</code> y para el <code>Indice_mensual_ts</code>.</p>
 <pre class="r"><code>d1_Inf_inter &lt;- diff(Inflacion_mensual_inter, lag = 12, differences = 1)
 pp.test(d1_Inf_inter)</code></pre>
-<pre><code>## Warning in pp.test(d1_Inf_inter): p-value smaller than printed p-value</code></pre>
-<pre><code>## 
-##  Phillips-Perron Unit Root Test
-## 
-## data:  d1_Inf_inter
-## Dickey-Fuller Z(alpha) = -48.778, Truncation lag parameter = 6, p-value
-## = 0.01
-## alternative hypothesis: stationary</code></pre>
+<pre><code>## Phillips-Perron Unit Root Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##  lag Z_rho p.value
+##    6 -48.7    0.01
+## ----- 
+##  Type 2: with drift no trend 
+##  lag Z_rho p.value
+##    6 -48.7    0.01
+## ----- 
+##  Type 3: with drift and trend 
+##  lag Z_rho p.value
+##    6 -48.8    0.01
+## --------------- 
+## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
 <pre class="r"><code>pp.test(d1_INPC_mensual)</code></pre>
-<pre><code>## 
-##  Phillips-Perron Unit Root Test
-## 
-## data:  d1_INPC_mensual
-## Dickey-Fuller Z(alpha) = -10.103, Truncation lag parameter = 5, p-value
-## = 0.5458
-## alternative hypothesis: stationary</code></pre>
+<pre><code>## Phillips-Perron Unit Root Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##  lag Z_rho p.value
+##    5 0.453   0.793
+## ----- 
+##  Type 2: with drift no trend 
+##  lag Z_rho p.value
+##    5 -6.26   0.388
+## ----- 
+##  Type 3: with drift and trend 
+##  lag Z_rho p.value
+##    5 -10.1   0.454
+## --------------- 
+## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
 <pre class="r"><code>pp.test(d2_INPC_mensual)</code></pre>
-<pre><code>## Warning in pp.test(d2_INPC_mensual): p-value smaller than printed p-value</code></pre>
-<pre><code>## 
-##  Phillips-Perron Unit Root Test
-## 
-## data:  d2_INPC_mensual
-## Dickey-Fuller Z(alpha) = -35.853, Truncation lag parameter = 5, p-value
-## = 0.01
-## alternative hypothesis: stationary</code></pre>
+<pre><code>## Phillips-Perron Unit Root Test 
+## alternative: stationary 
+##  
+## Type 1: no drift no trend 
+##  lag Z_rho p.value
+##    5 -35.1    0.01
+## ----- 
+##  Type 2: with drift no trend 
+##  lag Z_rho p.value
+##    5 -35.8    0.01
+## ----- 
+##  Type 3: with drift and trend 
+##  lag Z_rho p.value
+##    5 -35.9    0.01
+## --------------- 
+## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
 <p>Obtenemos que la serie de <code>Inflacion_mensual_inter</code> es I(1) y la de <code>Indice_mensual_ts</code> es I(2).</p>
 </div>
 </div>

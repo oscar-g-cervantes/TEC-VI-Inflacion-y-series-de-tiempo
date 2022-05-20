@@ -248,7 +248,7 @@ Obtenemos las primeras diferencias de la serie del INPC y realizamos nuevamente 
 
 ```{r}
 d1_INPC_mensual <- diff(Indice_mensual_ts, lag = 12, differences = 1)
-adf.test(d1_INPC_mensual, k = 1)
+adf.test(d1_INPC_mensual)
 ggplot2::autoplot(d1_INPC_mensual, ts.colour = "gray") +
   labs(title = "Primeras diferencias del INPC 1983-2022",
        subtitle = "(2018=100",
