@@ -235,9 +235,6 @@ La hipótesis nula del test ADF es la no estacionariedad, si rechazamos $H_o$ en
 
 ```{r}
 adf.test(Indice_mensual_ts)
-adfTest(Indice_mensual_ts, lags = 1, type = "nc") # Con constante
-adfTest(Indice_mensual_ts, lags = 1, type = "c")  # Sin constante ni tendencia
-adfTest(Indice_mensual_ts, lags = 1, type = "ct") # Con constante y tendencia
 adf.test(Inflacion_mensual)
 adf.test(Inflacion_mensual_inter)
 ```
@@ -271,7 +268,6 @@ La serie del INPC de 1983 a 2022 es estacionaria en sus segundas diferencias, es
 pp.test(Indice_mensual_ts)
 pp.test(Inflacion_mensual)
 pp.test(Inflacion_mensual_inter)
-aTSA::pp.test(Indice_mensual_ts, type=c("Z_tau"))
 ```
 
 Con el test de Phillips-Perron sólo la serie de `Inflacion_mensual` no presenta raíz unitaria, es I(0). Realizamos la prueba para las diferencias de la `Inflacion_mensual_inter` y para el `Indice_mensual_ts`.

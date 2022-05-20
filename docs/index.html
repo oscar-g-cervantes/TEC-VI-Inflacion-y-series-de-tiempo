@@ -557,55 +557,6 @@ plot(INPC_HP)</code></pre>
 ## [6,]   5 -1.91   0.616
 ## ---- 
 ## Note: in fact, p.value = 0.01 means p.value &lt;= 0.01</code></pre>
-<pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;nc&quot;) # Con constante</code></pre>
-<pre><code>## Warning in adfTest(Indice_mensual_ts, lags = 1, type = &quot;nc&quot;): p-value greater
-## than printed p-value</code></pre>
-<pre><code>## 
-## Title:
-##  Augmented Dickey-Fuller Test
-## 
-## Test Results:
-##   PARAMETER:
-##     Lag Order: 1
-##   STATISTIC:
-##     Dickey-Fuller: 7.0024
-##   P VALUE:
-##     0.99 
-## 
-## Description:
-##  Fri May 20 14:16:05 2022 by user: oscar</code></pre>
-<pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;c&quot;)  # Sin constante ni tendencia</code></pre>
-<pre><code>## Warning in adfTest(Indice_mensual_ts, lags = 1, type = &quot;c&quot;): p-value greater
-## than printed p-value</code></pre>
-<pre><code>## 
-## Title:
-##  Augmented Dickey-Fuller Test
-## 
-## Test Results:
-##   PARAMETER:
-##     Lag Order: 1
-##   STATISTIC:
-##     Dickey-Fuller: 3.2704
-##   P VALUE:
-##     0.99 
-## 
-## Description:
-##  Fri May 20 14:16:05 2022 by user: oscar</code></pre>
-<pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;ct&quot;) # Con constante y tendencia</code></pre>
-<pre><code>## 
-## Title:
-##  Augmented Dickey-Fuller Test
-## 
-## Test Results:
-##   PARAMETER:
-##     Lag Order: 1
-##   STATISTIC:
-##     Dickey-Fuller: -1.9324
-##   P VALUE:
-##     0.6068 
-## 
-## Description:
-##  Fri May 20 14:16:05 2022 by user: oscar</code></pre>
 <pre class="r"><code>adf.test(Inflacion_mensual)</code></pre>
 <pre><code>## Augmented Dickey-Fuller Test 
 ## alternative: stationary 
@@ -796,23 +747,6 @@ adf.test(d2_INPC_mensual)</code></pre>
 ##  Type 3: with drift and trend 
 ##  lag Z_rho p.value
 ##    6 -14.3    0.27
-## --------------- 
-## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
-<pre class="r"><code>aTSA::pp.test(Indice_mensual_ts, type=c(&quot;Z_tau&quot;))</code></pre>
-<pre><code>## Phillips-Perron Unit Root Test 
-## alternative: stationary 
-##  
-## Type 1: no drift no trend 
-##  lag Z_tau p.value
-##    5  11.5    0.99
-## ----- 
-##  Type 2: with drift no trend 
-##  lag Z_tau p.value
-##    5  4.21    0.99
-## ----- 
-##  Type 3: with drift and trend 
-##  lag Z_tau p.value
-##    5    -2   0.577
 ## --------------- 
 ## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
 <p>Con el test de Phillips-Perron sólo la serie de <code>Inflacion_mensual</code> no presenta raíz unitaria, es I(0). Realizamos la prueba para las diferencias de la <code>Inflacion_mensual_inter</code> y para el <code>Indice_mensual_ts</code>.</p>
