@@ -549,7 +549,7 @@ plot(INPC_HP)</code></pre>
 ##     0.99 
 ## 
 ## Description:
-##  Fri May 20 13:20:06 2022 by user: oscar</code></pre>
+##  Fri May 20 13:33:01 2022 by user: oscar</code></pre>
 <pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;c&quot;)  # Sin constante ni tendencia</code></pre>
 <pre><code>## Warning in adfTest(Indice_mensual_ts, lags = 1, type = &quot;c&quot;): p-value greater
 ## than printed p-value</code></pre>
@@ -566,7 +566,7 @@ plot(INPC_HP)</code></pre>
 ##     0.99 
 ## 
 ## Description:
-##  Fri May 20 13:20:06 2022 by user: oscar</code></pre>
+##  Fri May 20 13:33:01 2022 by user: oscar</code></pre>
 <pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;ct&quot;) # Con constante y tendencia</code></pre>
 <pre><code>## 
 ## Title:
@@ -581,7 +581,7 @@ plot(INPC_HP)</code></pre>
 ##     0.6068 
 ## 
 ## Description:
-##  Fri May 20 13:20:06 2022 by user: oscar</code></pre>
+##  Fri May 20 13:33:01 2022 by user: oscar</code></pre>
 <pre class="r"><code>adf.test(Inflacion_mensual)</code></pre>
 <pre><code>## 
 ##  Augmented Dickey-Fuller Test
@@ -626,7 +626,27 @@ adf.test(d2_INPC_mensual)</code></pre>
 </div>
 <div id="phillips-perron-test" class="section level2">
 <h2>8.2 Phillips-Perron test</h2>
-<pre class="r"><code>pp.test(Indice_mensual_ts, )</code></pre>
+<pre class="r"><code>urppTest(Indice_mensual_ts, type = c(&quot;Z-alpha&quot;, &quot;Z-tau&quot;), model = c(&quot;constant&quot;), doplot = F)</code></pre>
+<pre><code>## 
+## Title:
+##  Phillips-Perron Unit Root Test
+## 
+## Test Results:
+## 
+## 
+## Description:
+##  Fri May 20 13:33:01 2022 by user: oscar</code></pre>
+<pre class="r"><code>urppTest(Indice_mensual_ts, type = c(&quot;Z-alpha&quot;, &quot;Z-tau&quot;), model = c(&quot;constant&quot;, &quot;trend&quot;), doplot = F)</code></pre>
+<pre><code>## 
+## Title:
+##  Phillips-Perron Unit Root Test
+## 
+## Test Results:
+## 
+## 
+## Description:
+##  Fri May 20 13:33:01 2022 by user: oscar</code></pre>
+<pre class="r"><code>pp.test(Indice_mensual_ts)</code></pre>
 <pre><code>## 
 ##  Phillips-Perron Unit Root Test
 ## 
