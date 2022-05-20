@@ -27,7 +27,6 @@ library(tidyverse)
 library(tseries)
 library(mFilter)
 library(ggfortify)
-library(fUnitRoots)
 library(aTSA)
 ```
 
