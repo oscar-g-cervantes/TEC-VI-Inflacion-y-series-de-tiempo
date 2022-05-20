@@ -28,6 +28,7 @@ library(tseries)
 library(mFilter)
 library(ggfortify)
 library(fUnitRoots)
+library(aTSA)
 ```
 
 # 2. Bases de datos
@@ -267,11 +268,10 @@ La serie del INPC de 1983 a 2022 es estacionaria en sus segundas diferencias, es
 ## 8.2  Phillips-Perron test
 
 ```{r}
-urppTest(Indice_mensual_ts, type = c("Z-alpha", "Z-tau"), model = c("constant"), doplot = F)
-urppTest(Indice_mensual_ts, type = c("Z-alpha", "Z-tau"), model = c("constant", "trend"), doplot = F)
 pp.test(Indice_mensual_ts)
 pp.test(Inflacion_mensual)
 pp.test(Inflacion_mensual_inter)
+aTSA::pp.test(Indice_mensual_ts, type=c("Z_tau"))
 ```
 
 Con el test de Phillips-Perron sólo la serie de `Inflacion_mensual` no presenta raíz unitaria, es I(0). Realizamos la prueba para las diferencias de la `Inflacion_mensual_inter` y para el `Indice_mensual_ts`.
