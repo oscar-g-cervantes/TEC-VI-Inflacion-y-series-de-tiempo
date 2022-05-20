@@ -267,7 +267,9 @@ La serie del INPC de 1983 a 2022 es estacionaria en sus segundas diferencias, es
 ## 8.2  Phillips-Perron test
 
 ```{r}
-pp.test(Indice_mensual_ts, )
+urppTest(Indice_mensual_ts, type = c("Z-alpha", "Z-tau"), model = c("constant"), doplot = F)
+urppTest(Indice_mensual_ts, type = c("Z-alpha", "Z-tau"), model = c("constant", "trend"), doplot = F)
+pp.test(Indice_mensual_ts)
 pp.test(Inflacion_mensual)
 pp.test(Inflacion_mensual_inter)
 ```
