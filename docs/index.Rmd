@@ -224,7 +224,9 @@ plot(INPC_HP)
 
 ```
 
-# 8. Prueba de raices unitarias - Augmented Dickey-Fuller (ADF) test
+# 8. Prueba de raices unitarias 
+
+## 8.1 Augmented Dickey-Fuller (ADF) test
 
 La hipótesis nula del test ADF es la no estacionariedad, si rechazamos $H_o$ entonces nuestra sere es estacionaria. Realizaremos el test para las series `Indice_mensual_ts`, `Inflación_mensual` e `Inflacion_mensual_inter`
 
@@ -256,3 +258,22 @@ adf.test(d2_INPC_mensual)
 ```
 
 La serie del INPC de 1983 a 2022 es estacionaria en sus segundas diferencias, es decir, es I(2), mientras que la inflación mensual y la inflación interanual son I(0).
+
+## 8.2  Phillips-Perron test
+
+```{r}
+pp.test(Indice_mensual_ts)
+pp.test(Inflacion_mensual)
+pp.test(Inflacion_mensual_inter)
+```
+
+Con el test de Phillips-Perron sólo la serie de `Inflacion_mensual` no presenta raíz unitaria, es I(0). Realizamos la prueba para las diferencias de la `Inflacion_mensual_inter` y para el `Indice_mensual_ts`.
+
+```{r}
+d1_Inf_inter <- diff(Inflacion_mensual_inter, lag = 12, differences = 1)
+pp.test(d1_Inf_inter)
+pp.test(d1_INPC_mensual)
+pp.test(d2_INPC_mensual)
+```
+
+Obtenemos que la serie de `Inflacion_mensual_inter` es I(1) y la de `Indice_mensual_ts` es I(2).
