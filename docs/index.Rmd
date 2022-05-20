@@ -150,9 +150,8 @@ ggplot2::autoplot(mtl) +
           y = "INPC (%)",
           caption = "Fuente: Elaboración propia con datos del BIE INEGI") +
      theme_gray(base_family = "serif")
-
-
 ```
+
 
 Como $\beta_1>0$ sabemos que existe tendencia lineal creciente.
 
@@ -233,9 +232,9 @@ plot(INPC_HP)
 La hipótesis nula del test ADF es la no estacionariedad, si rechazamos $H_o$ entonces nuestra sere es estacionaria. Realizaremos el test para las series `Indice_mensual_ts`, `Inflación_mensual` e `Inflacion_mensual_inter`
 
 ```{r}
-adf.test(Indice_mensual_ts)
-adf.test(Inflacion_mensual)
-adf.test(Inflacion_mensual_inter)
+aTSA::adf.test(Indice_mensual_ts)
+aTSA::adf.test(Inflacion_mensual)
+aTSA::adf.test(Inflacion_mensual_inter)
 ```
 
 Los resultados del test nos indícan que el INPC mensual no es estacionario en niveles, mientras que la inflación mensual y la inflación interanual si lo son al presentar, para estas últimas, un $p-value < 0.5$. 
@@ -264,18 +263,18 @@ La serie del INPC de 1983 a 2022 es estacionaria en sus segundas diferencias, es
 ## 8.2  Phillips-Perron test
 
 ```{r}
-pp.test(Indice_mensual_ts)
-pp.test(Inflacion_mensual)
-pp.test(Inflacion_mensual_inter)
+aTSA::pp.test(Indice_mensual_ts)
+aTSA::pp.test(Inflacion_mensual)
+aTSA::pp.test(Inflacion_mensual_inter)
 ```
 
 Con el test de Phillips-Perron sólo la serie de `Inflacion_mensual` no presenta raíz unitaria, es I(0). Realizamos la prueba para las diferencias de la `Inflacion_mensual_inter` y para el `Indice_mensual_ts`.
 
 ```{r}
 d1_Inf_inter <- diff(Inflacion_mensual_inter, lag = 12, differences = 1)
-pp.test(d1_Inf_inter)
-pp.test(d1_INPC_mensual)
-pp.test(d2_INPC_mensual)
+aTSA::pp.test(d1_Inf_inter)
+aTSA::pp.test(d1_INPC_mensual)
+aTSA::pp.test(d2_INPC_mensual)
 ```
 
 Obtenemos que la serie de `Inflacion_mensual_inter` es I(1) y la de `Indice_mensual_ts` es I(2).

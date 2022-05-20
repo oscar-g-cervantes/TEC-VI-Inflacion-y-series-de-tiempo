@@ -526,7 +526,7 @@ plot(INPC_HP)</code></pre>
 <div id="augmented-dickey-fuller-adf-test" class="section level2">
 <h2>8.1 Augmented Dickey-Fuller (ADF) test</h2>
 <p>La hipótesis nula del test ADF es la no estacionariedad, si rechazamos <span class="math inline">\(H_o\)</span> entonces nuestra sere es estacionaria. Realizaremos el test para las series <code>Indice_mensual_ts</code>, <code>Inflación_mensual</code> e <code>Inflacion_mensual_inter</code></p>
-<pre class="r"><code>adf.test(Indice_mensual_ts)</code></pre>
+<pre class="r"><code>aTSA::adf.test(Indice_mensual_ts)</code></pre>
 <pre><code>## Augmented Dickey-Fuller Test 
 ## alternative: stationary 
 ##  
@@ -556,7 +556,7 @@ plot(INPC_HP)</code></pre>
 ## [6,]   5 -1.91   0.616
 ## ---- 
 ## Note: in fact, p.value = 0.01 means p.value &lt;= 0.01</code></pre>
-<pre class="r"><code>adf.test(Inflacion_mensual)</code></pre>
+<pre class="r"><code>aTSA::adf.test(Inflacion_mensual)</code></pre>
 <pre><code>## Augmented Dickey-Fuller Test 
 ## alternative: stationary 
 ##  
@@ -589,7 +589,7 @@ plot(INPC_HP)</code></pre>
 ## [7,]   6 -3.79  0.0192
 ## ---- 
 ## Note: in fact, p.value = 0.01 means p.value &lt;= 0.01</code></pre>
-<pre class="r"><code>adf.test(Inflacion_mensual_inter)</code></pre>
+<pre class="r"><code>aTSA::adf.test(Inflacion_mensual_inter)</code></pre>
 <pre><code>## Augmented Dickey-Fuller Test 
 ## alternative: stationary 
 ##  
@@ -697,7 +697,7 @@ adf.test(d2_INPC_mensual)</code></pre>
 </div>
 <div id="phillips-perron-test" class="section level2">
 <h2>8.2 Phillips-Perron test</h2>
-<pre class="r"><code>pp.test(Indice_mensual_ts)</code></pre>
+<pre class="r"><code>aTSA::pp.test(Indice_mensual_ts)</code></pre>
 <pre><code>## Phillips-Perron Unit Root Test 
 ## alternative: stationary 
 ##  
@@ -714,7 +714,7 @@ adf.test(d2_INPC_mensual)</code></pre>
 ##    5 -4.15   0.871
 ## --------------- 
 ## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
-<pre class="r"><code>pp.test(Inflacion_mensual)</code></pre>
+<pre class="r"><code>aTSA::pp.test(Inflacion_mensual)</code></pre>
 <pre><code>## Phillips-Perron Unit Root Test 
 ## alternative: stationary 
 ##  
@@ -731,7 +731,7 @@ adf.test(d2_INPC_mensual)</code></pre>
 ##    6 -67.4    0.01
 ## --------------- 
 ## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
-<pre class="r"><code>pp.test(Inflacion_mensual_inter)</code></pre>
+<pre class="r"><code>aTSA::pp.test(Inflacion_mensual_inter)</code></pre>
 <pre><code>## Phillips-Perron Unit Root Test 
 ## alternative: stationary 
 ##  
@@ -750,7 +750,7 @@ adf.test(d2_INPC_mensual)</code></pre>
 ## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
 <p>Con el test de Phillips-Perron sólo la serie de <code>Inflacion_mensual</code> no presenta raíz unitaria, es I(0). Realizamos la prueba para las diferencias de la <code>Inflacion_mensual_inter</code> y para el <code>Indice_mensual_ts</code>.</p>
 <pre class="r"><code>d1_Inf_inter &lt;- diff(Inflacion_mensual_inter, lag = 12, differences = 1)
-pp.test(d1_Inf_inter)</code></pre>
+aTSA::pp.test(d1_Inf_inter)</code></pre>
 <pre><code>## Phillips-Perron Unit Root Test 
 ## alternative: stationary 
 ##  
@@ -767,7 +767,7 @@ pp.test(d1_Inf_inter)</code></pre>
 ##    6 -48.8    0.01
 ## --------------- 
 ## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
-<pre class="r"><code>pp.test(d1_INPC_mensual)</code></pre>
+<pre class="r"><code>aTSA::pp.test(d1_INPC_mensual)</code></pre>
 <pre><code>## Phillips-Perron Unit Root Test 
 ## alternative: stationary 
 ##  
@@ -784,7 +784,7 @@ pp.test(d1_Inf_inter)</code></pre>
 ##    5 -10.1   0.454
 ## --------------- 
 ## Note: p-value = 0.01 means p.value &lt;= 0.01</code></pre>
-<pre class="r"><code>pp.test(d2_INPC_mensual)</code></pre>
+<pre class="r"><code>aTSA::pp.test(d2_INPC_mensual)</code></pre>
 <pre><code>## Phillips-Perron Unit Root Test 
 ## alternative: stationary 
 ##  
