@@ -27,6 +27,7 @@ library(tidyverse)
 library(tseries)
 library(mFilter)
 library(ggfortify)
+library(fUnitRoots)
 ```
 
 # 2. Bases de datos
@@ -137,6 +138,8 @@ tendencia y $\epsilon$ es el ruido. La estacionalidad no se modela.
 ```{r}
 m_tl <- tslm(Indice_mensual_ts ~ trend)
 summary(m_tl)
+m_tl_s <- tslm(Indice_mensual_ts ~ trend + season)
+summary(m_tl_s)
 
 mtl <- cbind(Indice_mensual_ts, m_tl$fitted.values)
 
@@ -221,7 +224,6 @@ Obtenemos el componente cíclico de la serie con el filtro Hodrick-Prescott de l
 lambda_hp1 <- 120000
 INPC_HP <- hpfilter(Indice_mensual_ts, type = "lambda", freq = lambda_hp1)
 plot(INPC_HP)
-
 ```
 
 # 8. Prueba de raices unitarias 
@@ -232,6 +234,9 @@ La hipótesis nula del test ADF es la no estacionariedad, si rechazamos $H_o$ en
 
 ```{r}
 adf.test(Indice_mensual_ts)
+adfTest(Indice_mensual_ts, lags = 1, type = "nc") # Con constante
+adfTest(Indice_mensual_ts, lags = 1, type = "c")  # Sin constante ni tendencia
+adfTest(Indice_mensual_ts, lags = 1, type = "ct") # Con constante y tendencia
 adf.test(Inflacion_mensual)
 adf.test(Inflacion_mensual_inter)
 ```
@@ -262,7 +267,7 @@ La serie del INPC de 1983 a 2022 es estacionaria en sus segundas diferencias, es
 ## 8.2  Phillips-Perron test
 
 ```{r}
-pp.test(Indice_mensual_ts)
+pp.test(Indice_mensual_ts, )
 pp.test(Inflacion_mensual)
 pp.test(Inflacion_mensual_inter)
 ```

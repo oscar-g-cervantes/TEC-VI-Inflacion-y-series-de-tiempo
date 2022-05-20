@@ -263,7 +263,8 @@ div.tocify {
 library(tidyverse)
 library(tseries)
 library(mFilter)
-library(ggfortify)</code></pre>
+library(ggfortify)
+library(fUnitRoots)</code></pre>
 </div>
 <div id="bases-de-datos" class="section level1">
 <h1>2. Bases de datos</h1>
@@ -403,6 +404,37 @@ summary(m_tl)</code></pre>
 ## Residual standard error: 4.474 on 482 degrees of freedom
 ## Multiple R-squared:  0.9847, Adjusted R-squared:  0.9847 
 ## F-statistic: 3.107e+04 on 1 and 482 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>m_tl_s &lt;- tslm(Indice_mensual_ts ~ trend + season)
+summary(m_tl_s)</code></pre>
+<pre><code>## 
+## Call:
+## tslm(formula = Indice_mensual_ts ~ trend + season)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -11.4196  -1.8918  -0.4011   2.2951  13.3157 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -13.486449   0.788716 -17.099   &lt;2e-16 ***
+## trend         0.256580   0.001468 174.727   &lt;2e-16 ***
+## season2       0.008034   0.996824   0.008    0.994    
+## season3       0.038909   0.996828   0.039    0.969    
+## season4      -0.110956   0.996833  -0.111    0.911    
+## season5      -0.637090   1.003038  -0.635    0.526    
+## season6      -0.724368   1.003035  -0.722    0.471    
+## season7      -0.770673   1.003034  -0.768    0.443    
+## season8      -0.823971   1.003035  -0.821    0.412    
+## season9      -0.788019   1.003038  -0.786    0.432    
+## season10     -0.742125   1.003044  -0.740    0.460    
+## season11     -0.579715   1.003051  -0.578    0.564    
+## season12     -0.484783   1.003061  -0.483    0.629    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.513 on 471 degrees of freedom
+## Multiple R-squared:  0.9848, Adjusted R-squared:  0.9844 
+## F-statistic:  2545 on 12 and 471 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre class="r"><code>mtl &lt;- cbind(Indice_mensual_ts, m_tl$fitted.values)
 
 ggplot2::autoplot(mtl) +
@@ -501,6 +533,55 @@ plot(INPC_HP)</code></pre>
 ## data:  Indice_mensual_ts
 ## Dickey-Fuller = -1.7635, Lag order = 7, p-value = 0.6782
 ## alternative hypothesis: stationary</code></pre>
+<pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;nc&quot;) # Con constante</code></pre>
+<pre><code>## Warning in adfTest(Indice_mensual_ts, lags = 1, type = &quot;nc&quot;): p-value greater
+## than printed p-value</code></pre>
+<pre><code>## 
+## Title:
+##  Augmented Dickey-Fuller Test
+## 
+## Test Results:
+##   PARAMETER:
+##     Lag Order: 1
+##   STATISTIC:
+##     Dickey-Fuller: 7.0024
+##   P VALUE:
+##     0.99 
+## 
+## Description:
+##  Fri May 20 13:20:06 2022 by user: oscar</code></pre>
+<pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;c&quot;)  # Sin constante ni tendencia</code></pre>
+<pre><code>## Warning in adfTest(Indice_mensual_ts, lags = 1, type = &quot;c&quot;): p-value greater
+## than printed p-value</code></pre>
+<pre><code>## 
+## Title:
+##  Augmented Dickey-Fuller Test
+## 
+## Test Results:
+##   PARAMETER:
+##     Lag Order: 1
+##   STATISTIC:
+##     Dickey-Fuller: 3.2704
+##   P VALUE:
+##     0.99 
+## 
+## Description:
+##  Fri May 20 13:20:06 2022 by user: oscar</code></pre>
+<pre class="r"><code>adfTest(Indice_mensual_ts, lags = 1, type = &quot;ct&quot;) # Con constante y tendencia</code></pre>
+<pre><code>## 
+## Title:
+##  Augmented Dickey-Fuller Test
+## 
+## Test Results:
+##   PARAMETER:
+##     Lag Order: 1
+##   STATISTIC:
+##     Dickey-Fuller: -1.9324
+##   P VALUE:
+##     0.6068 
+## 
+## Description:
+##  Fri May 20 13:20:06 2022 by user: oscar</code></pre>
 <pre class="r"><code>adf.test(Inflacion_mensual)</code></pre>
 <pre><code>## 
 ##  Augmented Dickey-Fuller Test
@@ -545,7 +626,7 @@ adf.test(d2_INPC_mensual)</code></pre>
 </div>
 <div id="phillips-perron-test" class="section level2">
 <h2>8.2 Phillips-Perron test</h2>
-<pre class="r"><code>pp.test(Indice_mensual_ts)</code></pre>
+<pre class="r"><code>pp.test(Indice_mensual_ts, )</code></pre>
 <pre><code>## 
 ##  Phillips-Perron Unit Root Test
 ## 
