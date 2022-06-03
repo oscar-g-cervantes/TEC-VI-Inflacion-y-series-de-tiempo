@@ -246,7 +246,7 @@ d1_INPC_mensual <- diff(Indice_mensual_ts, lag = 12, differences = 1)
 adf.test(d1_INPC_mensual)
 ggplot2::autoplot(d1_INPC_mensual, ts.colour = "gray") +
   labs(title = "Primeras diferencias del INPC 1983-2022",
-       subtitle = "(2018=100",
+       subtitle = "(2018=100)",
        x = "Fecha") +
   theme_dark(base_family = "serif")
 ```
@@ -278,3 +278,89 @@ aTSA::pp.test(d2_INPC_mensual)
 ```
 
 Obtenemos que la serie de `Inflacion_mensual_inter` es I(1) y la de `Indice_mensual_ts` es I(2).
+
+# 9. Modelos ARIMA
+
+$ARIMA$ significa AutoRegressive Integrated Moving Average. El término autorregresivo se refiere a los retrasos de la serie diferenciada (AR), el término de media movil (MA) se refiere a los retrasos de los errores, y el número de diferencias necesarias para hacer la serie estacionaria es la I (AR, I, MA). Un modelo o proceso $ARIMA$ es aquel que modela directamente la autocorrelación de los valores de la serie así como las autocorrelaciones de los errores del pronóstico.
+
+Realizaremos procesos ARIMA para las series `Inflacion_mensual`,`Inflacion_mensual_inter` e `Indice_mensual_ts`. Para estimar un ARIMA es necesario que las series sean estacionarias.
+
+```{r, echo=FALSE}
+ggplot2::autoplot(Inflacion_mensual, ts.colour = "darkblue") +
+  labs(title = "Inflación mensual 1970-2022",
+          x = "Fecha",
+          y = "Inflación mensual (%)",
+          caption = "Fuente: Elaboración propia con datos del BIE INEGI") +
+     theme_gray(base_family = "serif") + 
+     scale_x_date(date_breaks = "5 year", date_labels = "%Y")
+
+ggplot2::autoplot(d1_Inf_inter, ts.colour = "darkblue") +
+     labs(title = "Primeras diferencias inflación interanual 1970-2022",
+          subtitle = "Periodicidad mensual",
+          x = "Fecha",
+          y = "Inflación interanual (%)",
+          caption = "Fuente: Elaboración propia con datos del BIE INEGI") +
+     theme_gray(base_family = "serif") + 
+     scale_x_date(date_breaks = "5 year", date_labels = "%Y")
+
+ggplot2::autoplot(d2_INPC_mensual, ts.colour = "darkblue") +
+     labs(title = "Segundas diferencias INPC 1984-2022",
+          subtitle = "Periodicidad mensual",
+          x = "Fecha",
+          caption = "Fuente: Elaboración propia con datos del BIE INEGI") +
+     theme_gray(base_family = "serif") + 
+     scale_x_date(date_breaks = "5 year", date_labels = "%Y")
+
+```
+
+
+```{r}
+AR_1 <- auto.arima(Inflacion_mensual)
+AR_2 <- auto.arima(d1_Inf_inter)
+AR_2_2 <- auto.arima(Inflacion_mensual_inter)
+AR_3 <- auto.arima(d2_INPC_mensual)
+summary(AR_1)
+summary(AR_2)
+summary(AR_2_2)
+summary(AR_3)
+```
+
+Para probar si el modelo se ajusta bien realizamos la prueba de Box-Ljung
+
+```{r}
+Box.test(residuals(AR_1), type = "Ljung-Box")
+Box.test(residuals(AR_2), type = "Ljung-Box")
+Box.test(residuals(AR_2_2), type = "Ljung-Box")
+Box.test(residuals(AR_3), type = "Ljung-Box")
+```
+
+Para todos los casos, el test al presentar un $p-value > 0.05$, nos indica que existe ruido blanco: media igual a cero, varianza constante y no está serialmente correlacion serial.
+
+# 10. Pronósticos
+
+Realizaremos pronósticos con los modelos de tendencia lineal y cuadrática, y con los modelos $ARIMA$
+
+```{r}
+pro_tl <- forecast::forecast(m_tl, h = 8)
+pro_tc <- forecast::forecast(m_tc, h = 8)
+plot(pro_tl)
+plot(pro_tc)
+pro_AR1 <- forecast::forecast(AR_1, h =8)
+pro_AR2 <- forecast::forecast(AR_2, h =8)
+pro_AR2_2 <- forecast::forecast(AR_2_2, h =8)
+pro_AR3 <- forecast::forecast(AR_3, h =8)
+tail(Inflacion_mensual, n = 12)
+pro_AR1
+tail(d1_Inf_inter, n = 12)
+pro_AR2
+tail(Inflacion_mensual_inter, n = 12)
+pro_AR2
+tail(d2_INPC_mensual, n = 12)
+pro_AR3
+plot(pro_AR1)
+plot(pro_AR2)
+plot(pro_AR2_2)
+plot(pro_AR2_2, xlim = c(2018, 2023), ylim = c(0, 10))
+plot(pro_AR3)
+```
+
